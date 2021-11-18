@@ -17,7 +17,7 @@ class Grid {
     fill(255);
     //strokeWeight(2);
 
-    this.x = 10, this.y = 10;
+    this.x = 0, this.y = 40;
     this.end_x = 0, this.end_y = 0;
 
     for (let row = 0; row < rows; row++) {
@@ -30,10 +30,10 @@ class Grid {
 
         this.grid[row][col] = new Cell(X, Y, row, col);
       }
-
-      this.end_x = this.x + Cell.size * cols;
-      this.end_y = this.y + Cell.size * rows;
     }
+
+    this.end_x = this.x + Cell.size * cols;
+    this.end_y = this.y + Cell.size * rows;
 
   }
   
@@ -57,7 +57,8 @@ class Grid {
     for (let row of grid) {
       for (let cell of row) {
 
-        if ( !this.life && mx && my && cell.mouseHover(mx, my) ) {
+        //when life is not running allow changing cell state
+        if ( !this.life && mx && my && cell.mouseHover(mx, my)) {
           print(cell.row_pos+"  "+cell.col_pos);
           cell.changeColor();
         }
