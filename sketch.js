@@ -76,8 +76,14 @@ function startLife(){
 }
 
 function setButtons(){
-  btn_x = screen.width/2-200;
-  btn_y = 30;
+  if (deviceType() == 'desktop'){
+    btn_x = screen.width/2-200;
+    btn_y = 30;
+  }
+  else{
+    btn_x = 15;
+    btn_y = 30;
+  }
 
   let x=btn_x,y=btn_y;
 
