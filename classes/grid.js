@@ -22,7 +22,7 @@ class Grid {
     fill(255);
     //strokeWeight(2);
 
-    this.x = 0, this.y = 40;
+    this.x = -Cell.size, this.y = 40;
     this.end_x = 0, this.end_y = 0;
 
     for (let row = 0; row < rows; row++) {
