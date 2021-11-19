@@ -22,7 +22,10 @@ class Grid {
     fill(255);
     //strokeWeight(2);
 
-    this.x = 0, this.y = 40;
+    //this.x is -Cell.size because 
+    //won't be printing the first padding
+    //so that should be offscreen
+    this.x = -Cell.size, this.y = 40;
     this.end_x = 0, this.end_y = 0;
 
     for (let row = 0; row < rows; row++) {
@@ -79,12 +82,6 @@ class Grid {
         if (this.life){
           cell.applyRulesOfLife();
         }
-
-        // //don't calculate neighbor if reset is pressed
-        // if(!reset && r>=2 && c>=2){
-        //   let tmp_cell = this.grid[r-1][c-1];
-        //   tmp_cell.calcAliveNeighbors();
-        // }
 
         //Checking whether a single cell is alive
         if(cell.color==0){
