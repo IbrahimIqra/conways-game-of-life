@@ -16,6 +16,9 @@ function setup() {
   if (deviceType()=='desktop'){
     alert('Press F11 for fullscreen');
   }
+
+  //REMOVE THIS WHEN FINALIZING THE DROPDOWN MENU
+  drawPattern();
 }
 
 function draw() { 
@@ -23,7 +26,6 @@ function draw() {
   reset_button.mousePressed(resetWorld);
   start_button.mousePressed(startLife);
   // sel.changed(drawPattern);
-  drawPattern();
 
   if(world.life){
     fr = speed_slider.value();
@@ -60,7 +62,6 @@ function mouseClicked() {
 
 function createWorld() {
   world = new Grid(rows, cols);
-  // world.drawGrid();
   setButtons();
 }
 
