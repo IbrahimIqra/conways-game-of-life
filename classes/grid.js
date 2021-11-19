@@ -54,6 +54,82 @@ class Grid {
 
   }
   
+  drawPattern(p){
+    let grid = this.grid;
+    let x = Math.floor(rows/2);
+    let y = Math.floor(cols/2);
+    
+    print('inside draw pattern ',p);
+
+    switch (int(p)) {
+      case 0:
+        //Glider
+        break;
+      case 1:
+        //Blinker
+        grid[x-1][y].color = 0;
+        grid[x-1][y].alive = true;
+
+        grid[x][y].color = 0;
+        grid[x][y].alive = true;
+
+        grid[x+1][y].color = 0;
+        grid[x+1][y].alive = true;
+        break;
+      case 2:
+        //R-Pentomino
+        print('inside case statement');
+        grid[x-1][y].color = 0;
+        grid[x-1][y].alive = true;
+
+        grid[x][y].color = 0;
+        grid[x][y].alive = true;
+
+        grid[x+1][y].color = 0;
+        grid[x+1][y].alive = true;
+
+        grid[x][y-1].color = 0;
+        grid[x][y-1].alive = true;
+
+        grid[x-1][y+1].color = 0;
+        grid[x-1][y+1].alive = true;
+        print(x,y,' Color Changed');
+        break;
+      case 3:
+        //10-Cell Growth
+        x-=10;
+
+        grid[x][y].color = 0;
+        grid[x][y].alive = true;
+
+        grid[x+2][y].color = 0;
+        grid[x+2][y].alive = true;
+        grid[x+2][y+1].color = 0;
+        grid[x+2][y+1].alive = true;
+
+        grid[x+4][y+2].color = 0;
+        grid[x+4][y+2].alive = true;
+        grid[x+4][y+3].color = 0;
+        grid[x+4][y+3].alive = true;
+        grid[x+4][y+4].color = 0;
+        grid[x+4][y+4].alive = true;
+
+        grid[x+6][y+3].color = 0;
+        grid[x+6][y+3].alive = true;
+        grid[x+6][y+4].color = 0;
+        grid[x+6][y+4].alive = true;
+        grid[x+7][y+4].color = 0;
+        grid[x+7][y+4].alive = true;
+        grid[x+6][y+5].color = 0;
+        grid[x+6][y+5].alive = true;
+
+        break;
+    }
+
+    //for now
+    this.drawGrid();
+  }
+
   drawGrid(mx=null,my=null,reset=false,start=false) {
 
     if (start){
