@@ -8,13 +8,13 @@ let rows, cols,
 function setup() {
 
   createCanvas(screen.width,screen.height);
-
+  background(255);
   cols = Math.ceil(screen.width/Cell.size);
   rows = Math.ceil(screen.height/Cell.size);
 
   createWorld();
   if (deviceType()=='desktop'){
-    // alert('Press F11 for fullscreen');
+    alert('Press F11 for fullscreen');
   }
 }
 
@@ -22,7 +22,8 @@ function draw() {
 
   reset_button.mousePressed(resetWorld);
   start_button.mousePressed(startLife);
-  sel.changed(drawPattern);
+  // sel.changed(drawPattern);
+  drawPattern();
 
   if(world.life){
     fr = speed_slider.value();
@@ -40,7 +41,8 @@ function draw() {
 
 function drawPattern(){
   print(patterns[sel.value()]);
-  world.drawPattern( sel.value() );
+  // world.drawPattern( sel.value() );
+  world.drawPattern( 2 );
 }
 
 function mouseClicked() {
@@ -58,7 +60,7 @@ function mouseClicked() {
 
 function createWorld() {
   world = new Grid(rows, cols);
-  world.drawGrid();
+  // world.drawGrid();
   setButtons();
 }
 
@@ -73,16 +75,16 @@ function startLife(){
 }
 
 function setButtons(){
-  btn_x = screen.width/2-100
+  btn_x = screen.width/2-200;
   btn_y = 30;
 
   let x=btn_x,y=btn_y;
 
   sel = createSelect(false);
   patterns = ['Glider','Blinker','R-Pentomino','10-Cell Growth'];
-  for (let p=0; p<patterns.length; p++){
-    sel.option(patterns[p], p);
-  }
+  // for (let p=0; p<patterns.length; p++){
+  sel.option(patterns[2], 2);
+  // }
   sel.selected(patterns[0]);
   sel.position(x, y);
   sel.size(80,30);
@@ -106,10 +108,6 @@ function setButtons(){
   btn_endY = y+30;
 }
 
-function windowResized() {
-  window.scroll(screen.width/2-150, 0);
-}
-
 function deviceType(){
   const ua = navigator.userAgent;
   if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
@@ -119,4 +117,8 @@ function deviceType(){
       return "mobile";
   }
   return "desktop";
+}
+
+function windowResized() {
+  window.scroll(screen.width/2-220, 0);
 }

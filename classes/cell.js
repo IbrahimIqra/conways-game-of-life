@@ -7,7 +7,7 @@ class Cell {
    * @param {number} x - x position
    * @param {number} y - y position
    */
-  static size = 11;
+  static size = 5;
 
   constructor(x, y, row_pos, col_pos) {
     this.x = x;
@@ -23,6 +23,7 @@ class Cell {
     //all neighbors
     this.neighbors = [];
 
+    this.drawCell();
   }
 
   drawCell() {
@@ -53,6 +54,9 @@ class Cell {
     this.color = (this.color == 255) ? 0 : 255;
     console.log("TO", this.color);
     this.alive = (this.color == 0) ? true : false;
+
+    //TESTING
+    this.drawCell();
   }
 
   applyRulesOfLife() {
@@ -62,6 +66,7 @@ class Cell {
       if (this.alive_neighbors != 2 && this.alive_neighbors != 3) {
         this.color = 255;
         this.alive = false;
+        this.drawCell();
       }
     }
     //ELSE: IF CELL DEAD WITH WHITE COLOR (255)
@@ -71,6 +76,7 @@ class Cell {
         // then this cell is born
         this.color = 0;
         this.alive = true;
+        this.drawCell();
       }
     }
   }

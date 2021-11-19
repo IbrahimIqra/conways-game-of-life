@@ -56,10 +56,8 @@ class Grid {
   
   drawPattern(p){
     let grid = this.grid;
-    let x = Math.floor(rows/2);
-    let y = Math.floor(cols/2);
-    
-    print('inside draw pattern ',p);
+    let r = Math.floor(rows/2);
+    let c = Math.floor(cols/2);
 
     switch (int(p)) {
       case 0:
@@ -67,61 +65,77 @@ class Grid {
         break;
       case 1:
         //Blinker
-        grid[x-1][y].color = 0;
-        grid[x-1][y].alive = true;
+        grid[r-1][c].color = 0;
+        grid[r-1][c].alive = true;
 
-        grid[x][y].color = 0;
-        grid[x][y].alive = true;
+        grid[r][c].color = 0;
+        grid[r][c].alive = true;
 
-        grid[x+1][y].color = 0;
-        grid[x+1][y].alive = true;
+        grid[r+1][c].color = 0;
+        grid[r+1][c].alive = true;
         break;
       case 2:
         //R-Pentomino
-        print('inside case statement');
-        grid[x-1][y].color = 0;
-        grid[x-1][y].alive = true;
+        // print('inside case statement');
+        grid[r-1][c].color = 0;
+        grid[r-1][c].alive = true;
+        grid[r-1][c].drawCell();
 
-        grid[x][y].color = 0;
-        grid[x][y].alive = true;
+        grid[r][c].color = 0;
+        grid[r][c].alive = true;
+        grid[r][c].drawCell();
 
-        grid[x+1][y].color = 0;
-        grid[x+1][y].alive = true;
+        grid[r+1][c].color = 0;
+        grid[r+1][c].alive = true;
+        grid[r+1][c].drawCell();
 
-        grid[x][y-1].color = 0;
-        grid[x][y-1].alive = true;
+        grid[r][c-1].color = 0;
+        grid[r][c-1].alive = true;
+        grid[r][c-1].drawCell();
 
-        grid[x-1][y+1].color = 0;
-        grid[x-1][y+1].alive = true;
-        print(x,y,' Color Changed');
+        grid[r-1][c+1].color = 0;
+        grid[r-1][c+1].alive = true;
+        grid[r-1][c+1].drawCell();
+
         break;
       case 3:
         //10-Cell Growth
-        x-=10;
+        // r-=100;
+        // c+=80;
 
-        grid[x][y].color = 0;
-        grid[x][y].alive = true;
+        grid[r][c].color = 0;
+        grid[r][c].alive = true;
+        grid[r][c].drawCell();
 
-        grid[x+2][y].color = 0;
-        grid[x+2][y].alive = true;
-        grid[x+2][y+1].color = 0;
-        grid[x+2][y+1].alive = true;
+        grid[r][c+2].color = 0;
+        grid[r][c+2].alive = true;
+        grid[r][c+2].drawCell();
+        grid[r-1][c+2].color = 0;
+        grid[r-1][c+2].alive = true;
+        grid[r-1][c+2].drawCell();
 
-        grid[x+4][y+2].color = 0;
-        grid[x+4][y+2].alive = true;
-        grid[x+4][y+3].color = 0;
-        grid[x+4][y+3].alive = true;
-        grid[x+4][y+4].color = 0;
-        grid[x+4][y+4].alive = true;
+        grid[r-2][c+4].color = 0;
+        grid[r-2][c+4].alive = true;
+        grid[r-2][c+4].drawCell();
+        grid[r-3][c+4].color = 0;
+        grid[r-3][c+4].alive = true;
+        grid[r-3][c+4].drawCell();
+        grid[r-4][c+4].color = 0;
+        grid[r-4][c+4].alive = true;
+        grid[r-4][c+4].drawCell();
 
-        grid[x+6][y+3].color = 0;
-        grid[x+6][y+3].alive = true;
-        grid[x+6][y+4].color = 0;
-        grid[x+6][y+4].alive = true;
-        grid[x+7][y+4].color = 0;
-        grid[x+7][y+4].alive = true;
-        grid[x+6][y+5].color = 0;
-        grid[x+6][y+5].alive = true;
+        grid[r-3][c+6].color = 0;
+        grid[r-3][c+6].alive = true;
+        grid[r-3][c+6].drawCell();
+        grid[r-4][c+6].color = 0;
+        grid[r-4][c+6].alive = true;
+        grid[r-4][c+6].drawCell();
+        grid[r-4][c+7].color = 0;
+        grid[r-4][c+7].alive = true;
+        grid[r-4][c+7].drawCell();
+        grid[r-5][c+6].color = 0;
+        grid[r-5][c+6].alive = true;
+        grid[r-5][c+6].drawCell();
 
         break;
     }
@@ -165,9 +179,10 @@ class Grid {
         if (reset){
           cell.color = 255;
           cell.alive = false;
+          cell.drawCell();
         }
 
-        cell.drawCell();
+        // cell.drawCell();
 
         //No need to calculate neighbor
         //if reset is pressed
