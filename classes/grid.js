@@ -19,13 +19,10 @@ class Grid {
     this.grid = new Array(rows);
     this.life = false;
 
-    fill(255);
-    //strokeWeight(2);
-
     //this.x is -Cell.size because 
     //won't be printing the first padding
     //so that should be offscreen
-    this.x = -Cell.size, this.y = 40;
+    this.x = -Cell.size, this.y = -Cell.size;
     this.end_x = 0, this.end_y = 0;
 
     for (let row = 0; row < rows; row++) {
@@ -83,7 +80,8 @@ class Grid {
           cell.applyRulesOfLife();
         }
 
-        //Checking whether a single cell is alive
+        //Checking whether at least a
+        //single cell is alive or not
         if(cell.color==0){
           all_cell_dead=false;
         }
