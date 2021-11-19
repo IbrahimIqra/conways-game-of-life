@@ -7,7 +7,12 @@ class Grid {
    * @param {number} rows - amount of rows in the grid
    * @param {number} cols - amount of columns in the grid
    */
-  constructor(rows = 10, cols = 15) {
+  constructor(rows, cols) {
+    //kinda like extra padding
+    //we'll ignore this padding
+    //when drawing
+    rows+=2;
+    cols+=2;
 
     this.rows = rows;
     this.cols = cols;
@@ -27,8 +32,20 @@ class Grid {
       for (let col = 0; col < cols; col++) {
         let X = Cell.size * col + this.x;
         let Y = Cell.size * row + this.y;
-
+        
         this.grid[row][col] = new Cell(X, Y, row, col);
+
+        if(row>=2 && col>=2){
+          let tmp_cell = this.grid[row-1][col-1];
+          tmp_cell.neighbors.push(this.grid[row-2][col-2]);//up_left
+          tmp_cell.neighbors.push(this.grid[row-2][col-1]);//up
+          tmp_cell.neighbors.push(this.grid[row-2][col]);//up_right
+          tmp_cell.neighbors.push(this.grid[row-1][col-2]);//left
+          tmp_cell.neighbors.push(this.grid[row-1][col]);//right
+          tmp_cell.neighbors.push(this.grid[row][col-2]);//down_left
+          tmp_cell.neighbors.push(this.grid[row][col-1]);//down
+          tmp_cell.neighbors.push(this.grid[row][col]);//down_right
+        }
       }
     }
 
@@ -46,19 +63,14 @@ class Grid {
       this.life = false;
     }
 
-    if(this.life){
-      this.calcAllNeighbors();
-    }
-
-
-    let grid = this.grid;
     let all_cell_dead = true;
+    for (let r=1; r<this.rows-1; r++) {
+      for (let c=1; c<this.cols-1; c++) {
+        let cell = this.grid[r][c];
 
-    for (let row of grid) {
-      for (let cell of row) {
-
-        //when life is not running allow changing cell state
-        if ( !this.life && mx && my && cell.mouseHover(mx, my)) {
+        //allow changing cell state by clicking only
+        //when life hasn't begun or the grid isn't resetting
+        if (!reset && !start && mx && my && cell.mouseHover(mx, my)) {
           print(cell.row_pos+"  "+cell.col_pos);
           cell.changeColor();
         }
@@ -68,15 +80,31 @@ class Grid {
           cell.applyRulesOfLife();
         }
 
+        // //don't calculate neighbor if reset is pressed
+        // if(!reset && r>=2 && c>=2){
+        //   let tmp_cell = this.grid[r-1][c-1];
+        //   tmp_cell.calcAliveNeighbors();
+        // }
+
         //Checking whether a single cell is alive
         if(cell.color==0){
           all_cell_dead=false;
         }
-
+        
         if (reset){
           cell.color = 255;
+          cell.alive = false;
         }
+
         cell.drawCell();
+
+        //No need to calculate neighbor
+        //if reset is pressed
+        if(!reset && r>=2 && c>=2){
+          let tmp_cell = this.grid[r-1][c-1];
+          tmp_cell.calcAliveNeighbors();
+        }
+
       }
     }
     
@@ -85,61 +113,6 @@ class Grid {
       return -1;
     }
 
-  }
-
-  calcAllNeighbors(){
-    let grid = this.grid;
-    for (let row of grid){
-      for (let cell of row){
-        cell.alive_neighbors = 0;
-
-        let r = cell.row_pos;
-        let c = cell.col_pos;
-        
-        let up_left,up,up_right, left,right, down_left,down,down_right;
-
-        if( r-1 >=0 && c-1 >=0 ){
-          up_left = grid[r-1][c-1].color;
-          let add = (up_left==255)?0:1;
-          cell.alive_neighbors+=add;
-        }
-        if ( r-1 >= 0){
-          up = grid[r-1][c].color;
-          let add = (up==255)?0:1;
-          cell.alive_neighbors+=add;
-        }
-        if(r-1 >= 0 && c+1<this.cols){
-          up_right = grid[r-1][c+1].color;
-          let add = (up_right==255)?0:1;
-          cell.alive_neighbors+=add;
-        }
-        if(c-1 >= 0){
-          left = grid[r][c-1].color;
-          let add = (left==255)?0:1;
-          cell.alive_neighbors+=add;
-        }
-        if(c+1 < this.cols){
-          right = grid[r][c+1].color;
-          let add = (right==255)?0:1;
-          cell.alive_neighbors+=add;
-        }
-        if(r+1< this.rows && c-1>=0){
-          down_left = grid[r+1][c-1].color;
-          let add = (down_left==255)?0:1;
-          cell.alive_neighbors+=add;
-        }
-        if(r+1< this.rows){
-          down = grid[r+1][c].color;
-          let add = (down==255)?0:1;
-          cell.alive_neighbors+=add;
-        }
-        if(r+1<this.rows && c+1<this.cols){
-          down_right = grid[r+1][c+1].color;
-          let add = (down_right==255) ? 0:1;
-          cell.alive_neighbors+=add;
-        }
-      }
-    }
   }
 
 }

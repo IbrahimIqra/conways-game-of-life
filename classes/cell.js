@@ -7,7 +7,7 @@ class Cell {
    * @param {number} x - x position
    * @param {number} y - y position
    */
-  static size = 8;
+  static size = 10.5;
 
   constructor(x, y, row_pos, col_pos) {
     this.x = x;
@@ -18,7 +18,10 @@ class Cell {
     this.end_y = y + Cell.size;
 
     this.color = 255;
+    this.alive = false;
     this.alive_neighbors = 0;
+    //all neighbors
+    this.neighbors = [];
 
   }
 
@@ -39,12 +42,7 @@ class Cell {
     this.end_x = this.x + Cell.size;
     this.end_y = this.y + Cell.size;
 
-    return (
-      mx > this.x &&
-      mx < this.end_x &&
-      my > this.y &&
-      my < this.end_y
-    );
+    return mx > this.x && mx < this.end_x && my > this.y && my < this.end_y;
   }
 
   /**
@@ -52,15 +50,18 @@ class Cell {
    */
   changeColor() {
     console.log("COLOR CHANGED FROM", this.color);
-    this.color = (this.color === 255) ? 0 : 255;
-    console.log("TO", Math.abs(this.color - this.color));
+    this.color = (this.color == 255) ? 0 : 255;
+    console.log("TO", this.color);
+    this.alive = (this.color == 0) ? true : false;
   }
 
   applyRulesOfLife() {
+
     //IF CELL ALIVE WITH BLACK COLOR (0)
-    if (this.color == 0) {
+    if (this.alive) {
       if (this.alive_neighbors != 2 && this.alive_neighbors != 3) {
         this.color = 255;
+        this.alive = false;
       }
     }
     //ELSE: IF CELL DEAD WITH WHITE COLOR (255)
@@ -69,6 +70,16 @@ class Cell {
         // if exactly 3 neighbors alive
         // then this cell is born
         this.color = 0;
+        this.alive = true;
+      }
+    }
+  }
+
+  calcAliveNeighbors(){
+    this.alive_neighbors=0;
+    for(let n of this.neighbors){
+      if(n.alive){
+        this.alive_neighbors+=1;
       }
     }
   }

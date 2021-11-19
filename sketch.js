@@ -8,7 +8,6 @@ function setup() {
   cols = Math.floor(screen.availWidth/Cell.size);
   rows = Math.floor(screen.availHeight/Cell.size);
 
-  // button = createButton('Create New GRID');
   reset_button = createButton('RESET');
   start_button = createButton('LIFE');
   speed_slider = createSlider(1,15,fr,0);
@@ -18,7 +17,7 @@ function setup() {
 
 function draw() {
 
-  fr = speed_slider.value();
+  fr = (world.life) ? speed_slider.value() : 30;
   frameRate(fr);
 
   background(255);
@@ -56,12 +55,10 @@ function resetWorld() {
 }
 
 function startLife(){
-  frameRate(fr);
   console.log("Starting Game of Life");
   world.drawGrid(null,null,reset=false,start=true);
   
   setBtnPos();
-
 }
 
 function setBtnPos(){
