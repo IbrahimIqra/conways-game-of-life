@@ -27,10 +27,7 @@ function draw() {
   if(world.life){
     fr = speed_slider.value();
     frameRate(fr);
-    let flag = world.drawGrid();
-    if (flag==-1){
-      resetWorld();
-    }
+    world.drawGrid();
   }
   else{
     frameRate(30);
@@ -38,14 +35,11 @@ function draw() {
 
 }
 
-// function setPattern(){
-  
-// }
-
 function patternChanged(){
+  world.current_pattern = int(sel.value());
   print(patterns[sel.value()]);
-  world.drawGrid(null,null,reset=true,null);
-  world.drawGrid(null,null,null,null,p=sel.value());
+  
+  // world.drawPattern(world.current_pattern);
 }
 
 function mouseClicked() {
@@ -55,9 +49,10 @@ function mouseClicked() {
   let pad = Cell.size/2;
   if ( !(mx>=btn_x-pad && my>=btn_y-pad && mx<=btn_endX+pad && my<=btn_endY+pad) ){
     //mouse click will only work when life hasn't begun
-    if (!world.life){
-      world.drawGrid(mx,my);
-    }
+    // if (!world.life){
+    world.drawGrid(mx,my);
+    // }
+    // world.drawPattern(world.current_pattern);
   }
 }
 
@@ -68,12 +63,12 @@ function createWorld() {
 
 function resetWorld() {
   console.log("Resetting world");
-  world.drawGrid(null,null,reset=true,start=false);
+  world.resetGrid();
 }
 
 function startLife(){
   console.log("Starting Game of Life");
-  world.drawGrid(null,null,reset=false,start=true);
+  world.drawGrid(null,null,start=true);
 }
 
 function setButtons(){

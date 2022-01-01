@@ -19,6 +19,11 @@ class Grid {
     this.grid = new Array(rows);
     this.life = false;
 
+    //it keeps track of the currently selected
+    //pattern from the dropdown menu
+    //By default it's manual
+    this.current_pattern = 0;
+
     //this.x is -Cell.size because 
     //won't be printing the first padding
     //so that should be offscreen
@@ -54,17 +59,17 @@ class Grid {
 
   }
   
-  drawPattern(p){
+  drawPattern(r,c){
     let grid = this.grid;
-    let r = Math.floor(rows/2);
-    let c = Math.floor(cols/2);
 
-    switch (int(p)) {
+    switch (this.current_pattern) {
       case 0:
+        grid[r][c].switchColor();
         break;
       case 1:
         //Glider
         grid[r][c-1].birthAndDrawCell();
+        
         grid[r][c].birthAndDrawCell();
         grid[r][c+1].birthAndDrawCell();
         grid[r-1][c+1].birthAndDrawCell();
@@ -106,18 +111,23 @@ class Grid {
         break;
     }
 
+    this.allNeighborCalc();
   }
 
-  drawGrid(mx=null,my=null,reset=false,start=false,p=null) {
+  //TEMPORARY ALL NEIGHBOR CALC
+  allNeighborCalc(){
+    for (let r=2; r<this.rows-1; r++) {
+      for (let c=2; c<this.cols-1; c++) {
+        let cell = this.grid[r-1][c-1];
+        cell.calcAliveNeighbors();
+      }
+    }
+  }
+
+  drawGrid(mx=null,my=null,start=false) {
 
     if (start){
       this.life = true;
-    }
-    if (reset){
-      this.life = false;
-    }
-    else{
-      if (p) this.drawPattern(int(p));
     }
 
     let all_cell_dead = true;
@@ -125,38 +135,25 @@ class Grid {
       for (let c=1; c<this.cols-1; c++) {
         let cell = this.grid[r][c];
 
-        if (reset){// && cell.alive){
-          if(cell.alive) cell.killAndDrawCell();
-          else cell.killCell();
-
-          cell.alive_neighbors=0;
-          continue;
-        }
-
-
-        //allow changing cell state by clicking only
-        //when life hasn't begun or the grid isn't resetting
-        if (!reset && !start && mx && my && cell.mouseHover(mx, my)) {
+        if (!this.life && mx && my && cell.mouseHover(mx, my)) {
           print(cell.row_pos+"  "+cell.col_pos);
-          cell.changeColor();
+          this.drawPattern(cell.row_pos,cell.col_pos);
         }
-
+        
         //IF LIFE
         if (this.life){
           cell.applyRulesOfLife();
         }
 
-        //Checking whether at least a
-        //single cell is alive or not
-        if(cell.color==0){
-          all_cell_dead=false;
-        }
-
-        //No need to calculate neighbor
-        //if reset is pressed
-        if(!reset && r>=2 && c>=2){
+        if(r>=2 && c>=2){
           let tmp_cell = this.grid[r-1][c-1];
           tmp_cell.calcAliveNeighbors();
+        }
+
+        //Checking whether at least a
+        //single cell is alive or not
+        if(cell.alive){
+          all_cell_dead=false;
         }
 
       }
@@ -164,9 +161,28 @@ class Grid {
     
     //If game is on but all cell is dead
     if(this.life && all_cell_dead){
-      return -1;
+      print("Ending the simulation since all cells are dead!")
+      this.life = false;
     }
 
+  }
+
+  resetGrid(){
+    this.life=false;
+    for (let r=1; r<this.rows-1; r++) {
+      for (let c=1; c<this.cols-1; c++) {
+        let cell = this.grid[r][c];
+
+        if(cell.alive){
+          cell.killAndDrawCell();
+        }
+        else{
+          cell.killCell();
+        }
+
+        cell.alive_neighbors=0;
+      }
+    }
   }
 
 }

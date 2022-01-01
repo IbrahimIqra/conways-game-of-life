@@ -71,14 +71,13 @@ class Cell {
   /**
    * changes the color of the cell
    */
-  changeColor() {
-    console.log("COLOR CHANGED FROM", this.color);
-    this.color = (this.color == 255) ? 0 : 255;
-    console.log("TO", this.color);
-    this.alive = (this.color == 0) ? true : false;
-
-    //TESTING
-    this.drawCell();
+  switchColor() {
+    if(this.alive){
+      this.killAndDrawCell();
+    }
+    else{
+      this.birthAndDrawCell();
+    }
   }
 
   applyRulesOfLife() {
@@ -86,9 +85,11 @@ class Cell {
     //IF CELL ALIVE WITH BLACK COLOR (0)
     if (this.alive) {
       if (this.alive_neighbors != 2 && this.alive_neighbors != 3) {
-        this.color = 255;
-        this.alive = false;
-        this.drawCell();
+        //OVERPOPULATION KILL THE CELL
+        // this.color = 255;
+        // this.alive = false;
+        // this.drawCell();
+        this.killAndDrawCell();
       }
     }
     //ELSE: IF CELL DEAD WITH WHITE COLOR (255)
@@ -96,9 +97,10 @@ class Cell {
       if (this.alive_neighbors == 3) {
         // if exactly 3 neighbors alive
         // then this cell is born
-        this.color = 0;
-        this.alive = true;
-        this.drawCell();
+        // this.color = 0;
+        // this.alive = true;
+        // this.drawCell();
+        this.birthAndDrawCell();
       }
     }
     
