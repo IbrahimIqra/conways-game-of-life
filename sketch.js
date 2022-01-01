@@ -3,7 +3,7 @@ let rows, cols,
   sel,reset_button,start_button,speed_slider,
   btn_x,btn_y,btn_endX,btn_endY,
   world,
-  fr=120;
+  fr=9;
 
 function setup() {
 
@@ -44,6 +44,7 @@ function draw() {
 
 function patternChanged(){
   print(patterns[sel.value()]);
+  world.drawGrid(null,null,reset=true,null);
   world.drawGrid(null,null,null,null,p=sel.value());
 }
 
