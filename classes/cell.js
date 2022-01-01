@@ -33,6 +33,28 @@ class Cell {
     rect(this.x, this.y, Cell.size);
   }
 
+  killCell(){
+    this.color=255;
+    this.alive=false;
+  }
+
+  killAndDrawCell(){
+    this.color=255;
+    this.alive=false;
+    this.drawCell();
+  }
+
+  birthCell(){
+    this.color=0;
+    this.alive=true;
+  }
+
+  birthAndDrawCell(){
+    this.color=0;
+    this.alive=true;
+    this.drawCell();
+  }
+
   /**
    * returns true if mouse is pressed while within the cell otherwise return false
    * @param {number} mx - x position of the Mouse
@@ -79,6 +101,7 @@ class Cell {
         this.drawCell();
       }
     }
+    
   }
 
   calcAliveNeighbors(){

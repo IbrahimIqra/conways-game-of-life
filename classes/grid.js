@@ -61,90 +61,54 @@ class Grid {
 
     switch (int(p)) {
       case 0:
-        //Glider
         break;
       case 1:
-        //Blinker
-        grid[r-1][c].color = 0;
-        grid[r-1][c].alive = true;
-
-        grid[r][c].color = 0;
-        grid[r][c].alive = true;
-
-        grid[r+1][c].color = 0;
-        grid[r+1][c].alive = true;
+        //Glider
+        grid[r][c-1].birthAndDrawCell();
+        grid[r][c].birthAndDrawCell();
+        grid[r][c+1].birthAndDrawCell();
+        grid[r-1][c+1].birthAndDrawCell();
+        grid[r-2][c-2].birthAndDrawCell();
         break;
       case 2:
-        //R-Pentomino
-        // print('inside case statement');
-        grid[r-1][c].color = 0;
-        grid[r-1][c].alive = true;
-        grid[r-1][c].drawCell();
-
-        grid[r][c].color = 0;
-        grid[r][c].alive = true;
-        grid[r][c].drawCell();
-
-        grid[r+1][c].color = 0;
-        grid[r+1][c].alive = true;
-        grid[r+1][c].drawCell();
-
-        grid[r][c-1].color = 0;
-        grid[r][c-1].alive = true;
-        grid[r][c-1].drawCell();
-
-        grid[r-1][c+1].color = 0;
-        grid[r-1][c+1].alive = true;
-        grid[r-1][c+1].drawCell();
-
+        //Blinker
+        grid[r-1][c].birthAndDrawCell();
+        grid[r][c].birthAndDrawCell();
+        grid[r+1][c].birthAndDrawCell();
         break;
       case 3:
+        //R-Pentomino
+        grid[r-1][c].birthAndDrawCell();
+        grid[r][c].birthAndDrawCell();
+        grid[r+1][c].birthAndDrawCell();
+        grid[r][c-1].birthAndDrawCell();
+        grid[r-1][c+1].birthAndDrawCell();
+        break;
+      case 4:
         //10-Cell Growth
         // r-=100;
         // c+=80;
 
-        grid[r][c].color = 0;
-        grid[r][c].alive = true;
-        grid[r][c].drawCell();
+        grid[r][c].birthAndDrawCell();
 
-        grid[r][c+2].color = 0;
-        grid[r][c+2].alive = true;
-        grid[r][c+2].drawCell();
-        grid[r-1][c+2].color = 0;
-        grid[r-1][c+2].alive = true;
-        grid[r-1][c+2].drawCell();
+        grid[r][c+2].birthAndDrawCell();
+        grid[r-1][c+2].birthAndDrawCell();
 
-        grid[r-2][c+4].color = 0;
-        grid[r-2][c+4].alive = true;
-        grid[r-2][c+4].drawCell();
-        grid[r-3][c+4].color = 0;
-        grid[r-3][c+4].alive = true;
-        grid[r-3][c+4].drawCell();
-        grid[r-4][c+4].color = 0;
-        grid[r-4][c+4].alive = true;
-        grid[r-4][c+4].drawCell();
+        grid[r-2][c+4].birthAndDrawCell();
+        grid[r-3][c+4].birthAndDrawCell();
+        grid[r-4][c+4].birthAndDrawCell();
 
-        grid[r-3][c+6].color = 0;
-        grid[r-3][c+6].alive = true;
-        grid[r-3][c+6].drawCell();
-        grid[r-4][c+6].color = 0;
-        grid[r-4][c+6].alive = true;
-        grid[r-4][c+6].drawCell();
-        grid[r-4][c+7].color = 0;
-        grid[r-4][c+7].alive = true;
-        grid[r-4][c+7].drawCell();
-        grid[r-5][c+6].color = 0;
-        grid[r-5][c+6].alive = true;
-        grid[r-5][c+6].drawCell();
+        grid[r-3][c+6].birthAndDrawCell();
+        grid[r-4][c+6].birthAndDrawCell();
+        grid[r-4][c+7].birthAndDrawCell();
+        grid[r-5][c+6].birthAndDrawCell();
 
         break;
     }
 
-    //for now
-    this.drawGrid();
   }
 
-  drawGrid(mx=null,my=null,reset=false,start=false) {
+  drawGrid(mx=null,my=null,reset=false,start=false,p=null) {
 
     if (start){
       this.life = true;
@@ -152,11 +116,23 @@ class Grid {
     if (reset){
       this.life = false;
     }
+    else{
+      if (p) this.drawPattern(int(p));
+    }
 
     let all_cell_dead = true;
     for (let r=1; r<this.rows-1; r++) {
       for (let c=1; c<this.cols-1; c++) {
         let cell = this.grid[r][c];
+
+        if (reset){// && cell.alive){
+          if(cell.alive) cell.killAndDrawCell();
+          else cell.killCell();
+
+          cell.alive_neighbors=0;
+          continue;
+        }
+
 
         //allow changing cell state by clicking only
         //when life hasn't begun or the grid isn't resetting
@@ -175,14 +151,6 @@ class Grid {
         if(cell.color==0){
           all_cell_dead=false;
         }
-        
-        if (reset){
-          cell.color = 255;
-          cell.alive = false;
-          cell.drawCell();
-        }
-
-        // cell.drawCell();
 
         //No need to calculate neighbor
         //if reset is pressed
