@@ -19,10 +19,16 @@ class Grid {
     this.grid = new Array(rows);
     this.life = false;
 
-    //it keeps track of the currently selected
-    //pattern from the dropdown menu
+    //pattern of the currently selected
+    //option from the dropdown menu
     //By default it's manual
-    this.current_pattern = 0;
+    //meaning only change the clicked cell
+    this.current_pattern = {
+        "name": "Manual",
+        "pattern": [
+            [0,0]
+        ]
+    };
 
     //this.x is -Cell.size because 
     //won't be printing the first padding
@@ -62,55 +68,18 @@ class Grid {
   drawPattern(r,c){
     let grid = this.grid;
 
-    switch (this.current_pattern) {
-      case 0:
-        grid[r][c].switchColor();
-        break;
-      case 1:
-        //Glider
-        grid[r][c-1].birthAndDrawCell();
-        
-        grid[r][c].birthAndDrawCell();
-        grid[r][c+1].birthAndDrawCell();
-        grid[r-1][c+1].birthAndDrawCell();
-        grid[r-2][c-2].birthAndDrawCell();
-        break;
-      case 2:
-        //Blinker
-        grid[r-1][c].birthAndDrawCell();
-        grid[r][c].birthAndDrawCell();
-        grid[r+1][c].birthAndDrawCell();
-        break;
-      case 3:
-        //R-Pentomino
-        grid[r-1][c].birthAndDrawCell();
-        grid[r][c].birthAndDrawCell();
-        grid[r+1][c].birthAndDrawCell();
-        grid[r][c-1].birthAndDrawCell();
-        grid[r-1][c+1].birthAndDrawCell();
-        break;
-      case 4:
-        //10-Cell Growth
-        // r-=100;
-        // c+=80;
-
-        grid[r][c].birthAndDrawCell();
-
-        grid[r][c+2].birthAndDrawCell();
-        grid[r-1][c+2].birthAndDrawCell();
-
-        grid[r-2][c+4].birthAndDrawCell();
-        grid[r-3][c+4].birthAndDrawCell();
-        grid[r-4][c+4].birthAndDrawCell();
-
-        grid[r-3][c+6].birthAndDrawCell();
-        grid[r-4][c+6].birthAndDrawCell();
-        grid[r-4][c+7].birthAndDrawCell();
-        grid[r-5][c+6].birthAndDrawCell();
-
-        break;
+    if (this.current_pattern['name'] == 'Manual'){
+      grid[r][c].switchColor();
     }
-
+    else{
+      for (let p in this.current_pattern['pattern']){
+        //gotta write this line due to shitty json format
+        //converts every single thing into dictionary -_-
+        p = this.current_pattern['pattern'][p];
+        grid[r+p[0]][c+p[1]].birthAndDrawCell();
+      }
+    }
+    
     this.allNeighborCalc();
   }
 

@@ -1,9 +1,13 @@
 let rows, cols,
-  patterns,
+  patterns_json,
   sel,reset_button,start_button,speed_slider,
   btn_x,btn_y,btn_endX,btn_endY,
   world,
   fr=9;
+
+function preload(){
+  patterns_json = loadJSON('patterns.json');
+}
 
 function setup() {
 
@@ -36,8 +40,12 @@ function draw() {
 }
 
 function patternChanged(){
-  world.current_pattern = int(sel.value());
-  print(patterns[sel.value()]);
+  // world.current_pattern = int(sel.value());
+  // changed_pattern = patterns_json[sel.value()]['pattern']
+  //converting the pattern into an array and passing the value
+  // world.current_pattern = Object.values(changed_pattern);
+  world.current_pattern = patterns_json[sel.value()];
+  print(patterns_json[sel.value()]['name']);
 }
 
 function mouseClicked() {
@@ -78,11 +86,11 @@ function setButtons(){
   let x=btn_x,y=btn_y;
 
   sel = createSelect(false);
-  patterns = ['Manual','Glider','Blinker','R-Pentomino','10-Cell Growth'];
-  for (let p=0; p<patterns.length; p++){
-    sel.option(patterns[p], p);
+
+  for (let sl in patterns_json){
+    sel.option(patterns_json[sl]['name'], int(sl));
   }
-  sel.selected(patterns[0]);
+  sel.selected("Manual");
   sel.position(x, y);
   sel.size(80,30);
   sel.style('border-radius: 5');
