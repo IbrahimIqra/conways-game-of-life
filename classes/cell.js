@@ -17,7 +17,9 @@ class Cell {
     this.end_x = x + Cell.size;
     this.end_y = y + Cell.size;
 
-    this.color = 255;
+    //DEAD=BLACK=(RGB_val=0)
+    //ALIVE=WHITE=(RGB_val=255)
+    this.color = 0;
     this.alive = false;
     this.alive_neighbors = 0;
     //all neighbors
@@ -28,29 +30,29 @@ class Cell {
 
   drawCell() {
     fill(this.color);
-    stroke(220);
-    strokeWeight(0.5);
+    stroke(5);
+    strokeWeight(0.2);
     rect(this.x, this.y, Cell.size);
   }
 
   killCell(){
-    this.color=255;
+    this.color=0;
     this.alive=false;
   }
 
   killAndDrawCell(){
-    this.color=255;
+    this.color=0;
     this.alive=false;
     this.drawCell();
   }
 
   birthCell(){
-    this.color=0;
+    this.color=255;
     this.alive=true;
   }
 
   birthAndDrawCell(){
-    this.color=0;
+    this.color=255;
     this.alive=true;
     this.drawCell();
   }
@@ -82,24 +84,18 @@ class Cell {
 
   applyRulesOfLife() {
 
-    //IF CELL ALIVE WITH BLACK COLOR (0)
+    //IF CELL ALIVE WITH BLACK COLOR (255)
     if (this.alive) {
       if (this.alive_neighbors != 2 && this.alive_neighbors != 3) {
         //OVERPOPULATION KILL THE CELL
-        // this.color = 255;
-        // this.alive = false;
-        // this.drawCell();
         this.killAndDrawCell();
       }
     }
-    //ELSE: IF CELL DEAD WITH WHITE COLOR (255)
+    //ELSE: IF CELL DEAD WITH WHITE COLOR (0)
     else {
       if (this.alive_neighbors == 3) {
         // if exactly 3 neighbors alive
         // then this cell is born
-        // this.color = 0;
-        // this.alive = true;
-        // this.drawCell();
         this.birthAndDrawCell();
       }
     }

@@ -135,19 +135,19 @@ class Grid {
       for (let c=1; c<this.cols-1; c++) {
         let cell = this.grid[r][c];
 
-        if (!this.life && mx && my && cell.mouseHover(mx, my)) {
+        // if (!this.life && mx && my && cell.mouseHover(mx, my)) {
+        if (mx && my && cell.mouseHover(mx, my)) {
           print(cell.row_pos+"  "+cell.col_pos);
           this.drawPattern(cell.row_pos,cell.col_pos);
         }
         
         //IF LIFE
-        if (this.life){
+        if (this.life && !mx && !my){
           cell.applyRulesOfLife();
-        }
-
-        if(r>=2 && c>=2){
-          let tmp_cell = this.grid[r-1][c-1];
-          tmp_cell.calcAliveNeighbors();
+          if(r>=2 && c>=2){
+            let tmp_cell = this.grid[r-1][c-1];
+            tmp_cell.calcAliveNeighbors();
+          }
         }
 
         //Checking whether at least a
@@ -158,7 +158,7 @@ class Grid {
 
       }
     }
-    
+
     //If game is on but all cell is dead
     if(this.life && all_cell_dead){
       print("Ending the simulation since all cells are dead!")

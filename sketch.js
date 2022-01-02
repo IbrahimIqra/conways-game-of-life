@@ -38,8 +38,6 @@ function draw() {
 function patternChanged(){
   world.current_pattern = int(sel.value());
   print(patterns[sel.value()]);
-  
-  // world.drawPattern(world.current_pattern);
 }
 
 function mouseClicked() {
@@ -48,11 +46,7 @@ function mouseClicked() {
   //avoid the buttons area if pressed
   let pad = Cell.size/2;
   if ( !(mx>=btn_x-pad && my>=btn_y-pad && mx<=btn_endX+pad && my<=btn_endY+pad) ){
-    //mouse click will only work when life hasn't begun
-    // if (!world.life){
     world.drawGrid(mx,my);
-    // }
-    // world.drawPattern(world.current_pattern);
   }
 }
 
@@ -105,7 +99,7 @@ function setButtons(){
   start_button.size(60,30);
   start_button.style('border-radius: 5');
   
-  speed_slider = createSlider(1,15,fr,0);
+  speed_slider = createSlider(1,30,fr,0);
   x+=80;
   speed_slider.position(x, y);
   speed_slider.size(100,30);
