@@ -7,7 +7,7 @@ class Cell {
    * @param {number} x - x position
    * @param {number} y - y position
    */
-  static size = 5;
+  static size = 35;
 
   constructor(x, y, row_pos, col_pos) {
     this.x = x;
@@ -30,8 +30,8 @@ class Cell {
 
   drawCell() {
     fill(this.color);
-    stroke(40);
-    strokeWeight(0.1);
+    stroke(15);
+    strokeWeight(0.2);
     rect(this.x, this.y, Cell.size);
   }
 

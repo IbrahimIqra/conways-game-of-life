@@ -85,7 +85,7 @@ function setButtons(){
     btn_y = 30;
   }
   else{
-    btn_x = 15;
+    btn_x = 10;
     btn_y = 30;
   }
 
@@ -101,11 +101,26 @@ function setButtons(){
   sel.size(80,30);
   sel.style('border-radius: 5');
 
+  zoom_in_button = createButton('ZOOM IN');
+  zoom_in_button.position(x+10, y+40);
+  zoom_in_button.size(100,25);
+  zoom_in_button.style('border-radius: 5');
+
+  speed_slider = createSlider(1,30,fr,0);
+  speed_slider.position(x+15, y+70);
+  speed_slider.size(200,30);
+  speed_slider.style('border-radius: 5');
+
   x+=100;
   reset_button = createButton('RESET');
   reset_button.position(x, y);
   reset_button.size(60,30);
   reset_button.style('border-radius: 5');
+
+  zoom_out_button = createButton('ZOOM OUT');
+  zoom_out_button.position(x+30, y+40);
+  zoom_out_button.size(100,25);
+  zoom_out_button.style('border-radius: 5');
 
   start_button = createButton('START');
   x+=80;
@@ -113,14 +128,14 @@ function setButtons(){
   start_button.size(60,30);
   start_button.style('border-radius: 5');
   
-  speed_slider = createSlider(1,30,fr,0);
-  x+=80;
-  speed_slider.position(x, y);
-  speed_slider.size(100,30);
-  speed_slider.style('border-radius: 5');
+  // speed_slider = createSlider(1,30,fr,0);
+  // x+=80;
+  // speed_slider.position(x, y);
+  // speed_slider.size(100,30);
+  // speed_slider.style('border-radius: 5');
 
-  btn_endX = x+100;
-  btn_endY = y+30;
+  btn_endX = x+80;
+  btn_endY = y+30+70;
 }
 
 function deviceType(){
