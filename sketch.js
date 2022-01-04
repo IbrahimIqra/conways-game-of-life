@@ -26,7 +26,7 @@ function draw() {
 
   reset_button.mousePressed(resetWorld);
   start_button.mousePressed(startLife);
-  sel.changed(patternChanged);
+  sel.changed(patternUpdated);
 
   if(world.life){
     fr = speed_slider.value();
@@ -39,11 +39,7 @@ function draw() {
 
 }
 
-function patternChanged(){
-  // world.current_pattern = int(sel.value());
-  // changed_pattern = patterns_json[sel.value()]['pattern']
-  //converting the pattern into an array and passing the value
-  // world.current_pattern = Object.values(changed_pattern);
+function patternUpdated(){
   world.current_pattern = patterns_json[sel.value()];
   print(patterns_json[sel.value()]['name']);
 }
@@ -64,8 +60,18 @@ function createWorld() {
 }
 
 function resetWorld() {
-  console.log("Resetting world");
-  world.resetGrid();
+  //alive to dead
+  if (world.life){
+    console.log("Resetting world");
+    world.resetGrid();
+  }
+  //if the world is already dead
+  else{
+    console.log("Clearing the residue of the previous world");
+    console.log("Creating a brand new world");
+    world = new Grid(rows,cols);
+    patternUpdated();
+  }
 }
 
 function startLife(){

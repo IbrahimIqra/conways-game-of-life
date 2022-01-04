@@ -30,8 +30,8 @@ class Cell {
 
   drawCell() {
     fill(this.color);
-    stroke(5);
-    strokeWeight(0.2);
+    stroke(50);
+    strokeWeight(0.1);
     rect(this.x, this.y, Cell.size);
   }
 
@@ -84,14 +84,14 @@ class Cell {
 
   applyRulesOfLife() {
 
-    //IF CELL ALIVE WITH BLACK COLOR (255)
+    //IF CELL ALIVE WITH WHITE COLOR (255)
     if (this.alive) {
       if (this.alive_neighbors != 2 && this.alive_neighbors != 3) {
         //OVERPOPULATION KILL THE CELL
         this.killAndDrawCell();
       }
     }
-    //ELSE: IF CELL DEAD WITH WHITE COLOR (0)
+    //ELSE: IF CELL DEAD WITH BLACK COLOR (0)
     else {
       if (this.alive_neighbors == 3) {
         // if exactly 3 neighbors alive

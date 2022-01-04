@@ -79,8 +79,7 @@ class Grid {
         grid[r+p[0]][c+p[1]].birthAndDrawCell();
       }
     }
-    
-    this.allNeighborCalc();
+
   }
 
   //TEMPORARY ALL NEIGHBOR CALC
@@ -95,6 +94,9 @@ class Grid {
 
   drawGrid(mx=null,my=null,start=false) {
 
+    // cells_to_be_born = [];
+    // cells_to_be_killed = [];
+
     if (start){
       this.life = true;
     }
@@ -104,19 +106,14 @@ class Grid {
       for (let c=1; c<this.cols-1; c++) {
         let cell = this.grid[r][c];
 
-        // if (!this.life && mx && my && cell.mouseHover(mx, my)) {
         if (mx && my && cell.mouseHover(mx, my)) {
           print(cell.row_pos+"  "+cell.col_pos);
           this.drawPattern(cell.row_pos,cell.col_pos);
         }
         
-        //IF LIFE
-        if (this.life && !mx && !my){
-          cell.applyRulesOfLife();
-          if(r>=2 && c>=2){
-            let tmp_cell = this.grid[r-1][c-1];
-            tmp_cell.calcAliveNeighbors();
-          }
+        if(r>=2 && c>=2){
+          let tmp_cell = this.grid[r-1][c-1];
+          tmp_cell.calcAliveNeighbors();
         }
 
         //Checking whether at least a
@@ -125,6 +122,16 @@ class Grid {
           all_cell_dead=false;
         }
 
+      }
+    }
+
+    for (let r=1; r<this.rows-1; r++) {
+      for (let c=1; c<this.cols-1; c++) {
+        let cell = this.grid[r][c];
+        //IF LIFE
+        if (this.life && !mx && !my){
+          cell.applyRulesOfLife();
+        }
       }
     }
 
