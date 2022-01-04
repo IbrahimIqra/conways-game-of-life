@@ -30,7 +30,7 @@ class Cell {
 
   drawCell() {
     fill(this.color);
-    stroke(50);
+    stroke(40);
     strokeWeight(0.1);
     rect(this.x, this.y, Cell.size);
   }
