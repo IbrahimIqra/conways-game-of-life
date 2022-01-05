@@ -8,15 +8,13 @@ class Grid {
    * @param {number} cols - amount of columns in the grid
    */
   constructor(rows, cols) {
-    //kinda like extra padding
-    //we'll ignore this padding
-    //when drawing
-    rows+=2;
-    cols+=2;
 
-    this.rows = rows;
     this.cols = cols;
-    this.grid = new Array(rows);
+    this.rows = rows;
+    this.drawing_cols = Math.ceil(screen.width/Cell.size);
+    this.drawing_rows = Math.ceil(screen.height/Cell.size);
+
+    this.grid = new Array(this.rows);
     this.life = false;
 
     //pattern of the currently selected
@@ -33,18 +31,25 @@ class Grid {
     //this.x is -Cell.size because 
     //won't be printing the first padding
     //so that should be offscreen
-    this.x = -Cell.size, this.y = -Cell.size;
+    this.x = 0, this.y = 0;
     this.end_x = 0, this.end_y = 0;
 
-    for (let row = 0; row < rows; row++) {
+    for (let row = 0, drawing_row = 0; row < this.rows; row++) {
 
-      this.grid[row] = new Array(cols);
+      this.grid[row] = new Array(this.cols);
 
-      for (let col = 0; col < cols; col++) {
-        let X = Cell.size * col + this.x;
-        let Y = Cell.size * row + this.y;
-        
-        this.grid[row][col] = new Cell(X, Y, row, col);
+      for (let col = 0, drawing_col = 0; col < this.cols; col++) {
+
+        if(row<=this.drawing_rows && col<=this.drawing_cols){
+          let X = Cell.size * drawing_col + this.x;
+          let Y = Cell.size * drawing_row + this.y;
+          this.grid[row][col] = new Cell(X, Y, row, col);
+          this.grid[row][col].drawCell();
+          drawing_col+=1;
+        }
+        else{
+          this.grid[row][col] = new Cell(null, null, row, col);
+        }
 
         if(row>=2 && col>=2){
           let tmp_cell = this.grid[row-1][col-1];
@@ -58,13 +63,16 @@ class Grid {
           tmp_cell.neighbors.push(this.grid[row][col]);//down_right
         }
       }
+      if(row<=this.drawing_rows){
+        drawing_row+=1;
+      }
     }
 
-    this.end_x = this.x + Cell.size * cols;
-    this.end_y = this.y + Cell.size * rows;
+    this.end_x = this.x + Cell.size * this.drawing_cols;
+    this.end_y = this.y + Cell.size * this.drawing_rows;
 
   }
-  
+
   drawPattern(r,c){
     let grid = this.grid;
 
@@ -82,6 +90,8 @@ class Grid {
 
   }
 
+  
+
   //TEMPORARY ALL NEIGHBOR CALC
   allNeighborCalc(){
     for (let r=2; r<this.rows-1; r++) {
@@ -94,16 +104,13 @@ class Grid {
 
   drawGrid(mx=null,my=null,start=false) {
 
-    // cells_to_be_born = [];
-    // cells_to_be_killed = [];
-
     if (start){
       this.life = true;
     }
 
     let all_cell_dead = true;
-    for (let r=1; r<this.rows-1; r++) {
-      for (let c=1; c<this.cols-1; c++) {
+    for (let r=0; r<this.rows; r++) {
+      for (let c=0; c<this.cols; c++) {
         let cell = this.grid[r][c];
 
         if (mx && my && cell.mouseHover(mx, my)) {
@@ -125,12 +132,12 @@ class Grid {
       }
     }
 
-    for (let r=1; r<this.rows-1; r++) {
-      for (let c=1; c<this.cols-1; c++) {
+    for (let r=0; r<this.rows; r++) {
+      for (let c=0; c<this.cols; c++) {
         let cell = this.grid[r][c];
         //IF LIFE
         if (this.life && !mx && !my){
-          cell.applyRulesOfLife();
+          cell.applyRulesOfLife( (c<=this.drawing_cols && r<=this.drawing_rows) );
         }
       }
     }
@@ -143,13 +150,25 @@ class Grid {
 
   }
 
+  reDrawGrid(){
+    fill(0);
+    for (let r=0; r<this.drawing_rows; r++) {
+      for (let c=0; c<this.drawing_cols; c++) {
+        let X = Cell.size * c;
+        let Y = Cell.size * r;
+        this.grid[r][c].setCellPos(X,Y);
+        this.grid[r][c].drawCell();
+      }
+    }
+  }
+
   resetGrid(){
     this.life=false;
-    for (let r=1; r<this.rows-1; r++) {
-      for (let c=1; c<this.cols-1; c++) {
+    for (let r=0; r<this.rows; r++) {
+      for (let c=0; c<this.cols; c++) {
         let cell = this.grid[r][c];
 
-        if(cell.alive){
+        if (cell.alive && r<=this.drawing_rows && c<=this.drawing_cols){
           cell.killAndDrawCell();
         }
         else{

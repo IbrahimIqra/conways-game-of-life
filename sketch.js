@@ -12,11 +12,15 @@ function preload(){
 function setup() {
 
   createCanvas(screen.width,screen.height);
-  background(255);
-  cols = Math.ceil(screen.width/Cell.size);
-  rows = Math.ceil(screen.height/Cell.size);
+  background(220);
+  // cols = Math.ceil(screen.width/Cell.size);
+  // rows = Math.ceil(screen.height/Cell.size);
+
+  cols = 640;
+  rows = 360;
 
   createWorld();
+
   if (deviceType()=='desktop'){
     alert('Press F11 for fullscreen');
   }
@@ -27,6 +31,9 @@ function draw() {
   reset_button.mousePressed(resetWorld);
   start_button.mousePressed(startLife);
   sel.changed(patternUpdated);
+
+  zoom_in_button.mousePressed(zoomIn);
+  zoom_out_button.mousePressed(zoomOut);
 
   if(world.life){
     fr = speed_slider.value();
@@ -55,6 +62,7 @@ function mouseClicked() {
 }
 
 function createWorld() {
+  print(rows,cols);
   world = new Grid(rows, cols);
   setButtons();
 }
@@ -77,6 +85,32 @@ function resetWorld() {
 function startLife(){
   console.log("Starting Game of Life");
   world.drawGrid(null,null,start=true);
+}
+
+function zoomIn(){
+  
+  Cell.size+=1;
+  world.drawing_cols = Math.ceil(screen.width/Cell.size);
+  world.drawing_rows = Math.ceil(screen.height/Cell.size);
+  world.reDrawGrid();
+  patternUpdated();
+  print("New drawing Grid: ",world.drawing_rows,world.drawing_cols);
+
+}
+
+function zoomOut(){
+  // if(Cell.size>5) Cell.size-=1;
+  if (world.drawing_rows!=world.rows){
+    Cell.size-=1;
+    world.drawing_cols = Math.ceil(screen.width/Cell.size);
+    world.drawing_rows = Math.ceil(screen.height/Cell.size);
+    world.reDrawGrid();
+    patternUpdated();
+    print("New drawing Grid: ",world.drawing_rows,world.drawing_cols);
+  }
+  else{
+    print("Lowest Cell size Limit Reached!!!");
+  }
 }
 
 function setButtons(){
