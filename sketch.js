@@ -3,7 +3,8 @@ let rows, cols,
   sel,reset_button,start_button,speed_slider,
   btn_x,btn_y,btn_endX,btn_endY,
   world,
-  fr=9;
+  fr=9,
+  zoom=1;//zoom in/out is 1 Cell.size unit
 
 function preload(){
   patterns_json = loadJSON('patterns.json');
@@ -12,9 +13,9 @@ function preload(){
 function setup() {
 
   createCanvas(screen.width,screen.height);
-  background(220);
-  // cols = Math.ceil(screen.width/Cell.size);
-  // rows = Math.ceil(screen.height/Cell.size);
+  background(0);
+  // cols = Math.floor(screen.width/Cell.size);
+  // rows = Math.floor(screen.height/Cell.size);
 
   cols = 640;
   rows = 360;
@@ -26,7 +27,7 @@ function setup() {
   }
 }
 
-function draw() { 
+function draw() {
 
   reset_button.mousePressed(resetWorld);
   start_button.mousePressed(startLife);
@@ -89,9 +90,9 @@ function startLife(){
 
 function zoomIn(){
   
-  Cell.size+=1;
-  world.drawing_cols = Math.ceil(screen.width/Cell.size);
-  world.drawing_rows = Math.ceil(screen.height/Cell.size);
+  Cell.size+=zoom;
+  world.drawing_cols = Math.floor(screen.width/Cell.size);
+  world.drawing_rows = Math.floor(screen.height/Cell.size);
   world.reDrawGrid();
   patternUpdated();
   print("New drawing Grid: ",world.drawing_rows,world.drawing_cols);
@@ -101,9 +102,9 @@ function zoomIn(){
 function zoomOut(){
   // if(Cell.size>5) Cell.size-=1;
   if (world.drawing_rows!=world.rows){
-    Cell.size-=1;
-    world.drawing_cols = Math.ceil(screen.width/Cell.size);
-    world.drawing_rows = Math.ceil(screen.height/Cell.size);
+    Cell.size-=zoom;
+    world.drawing_cols = Math.floor(screen.width/Cell.size);
+    world.drawing_rows = Math.floor(screen.height/Cell.size);
     world.reDrawGrid();
     patternUpdated();
     print("New drawing Grid: ",world.drawing_rows,world.drawing_cols);
@@ -161,12 +162,6 @@ function setButtons(){
   start_button.position(x, y);
   start_button.size(60,30);
   start_button.style('border-radius: 5');
-  
-  // speed_slider = createSlider(1,30,fr,0);
-  // x+=80;
-  // speed_slider.position(x, y);
-  // speed_slider.size(100,30);
-  // speed_slider.style('border-radius: 5');
 
   btn_endX = x+80;
   btn_endY = y+30+70;

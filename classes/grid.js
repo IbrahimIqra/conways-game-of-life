@@ -11,8 +11,8 @@ class Grid {
 
     this.cols = cols;
     this.rows = rows;
-    this.drawing_cols = Math.ceil(screen.width/Cell.size);
-    this.drawing_rows = Math.ceil(screen.height/Cell.size);
+    this.drawing_cols = Math.floor(screen.width/Cell.size);
+    this.drawing_rows = Math.floor(screen.height/Cell.size);
 
     this.grid = new Array(this.rows);
     this.life = false;
@@ -40,7 +40,7 @@ class Grid {
 
       for (let col = 0, drawing_col = 0; col < this.cols; col++) {
 
-        if(row<=this.drawing_rows && col<=this.drawing_cols){
+        if(row<this.drawing_rows && col<this.drawing_cols){
           let X = Cell.size * drawing_col + this.x;
           let Y = Cell.size * drawing_row + this.y;
           this.grid[row][col] = new Cell(X, Y, row, col);
@@ -70,7 +70,6 @@ class Grid {
 
     this.end_x = this.x + Cell.size * this.drawing_cols;
     this.end_y = this.y + Cell.size * this.drawing_rows;
-
   }
 
   drawPattern(r,c){
@@ -84,12 +83,15 @@ class Grid {
         //gotta write this line due to shitty json format
         //converts every single thing into dictionary -_-
         p = this.current_pattern['pattern'][p];
-        grid[r+p[0]][c+p[1]].birthAndDrawCell();
+        //just checking whether the cell is out of
+        //the grid boundary or not
+        if (0<=(r+p[0]) && (r+p[0])<=this.rows && 0<=(c+p[1]) && (c+p[1])<=this.cols){
+          grid[r+p[0]][c+p[1]].birthAndDrawCell();
+        }
       }
     }
-
+    // print("=======================");
   }
-
   
 
   //TEMPORARY ALL NEIGHBOR CALC
@@ -113,16 +115,18 @@ class Grid {
       for (let c=0; c<this.cols; c++) {
         let cell = this.grid[r][c];
 
-        if (mx && my && cell.mouseHover(mx, my)) {
-          print(cell.row_pos+"  "+cell.col_pos);
-          this.drawPattern(cell.row_pos,cell.col_pos);
+        if(cell.col_pos<this.drawing_cols && cell.row_pos<this.drawing_rows){
+          if (mx && my && cell.mouseHover(mx, my)) {
+            print(cell.row_pos+"  "+cell.col_pos);
+            this.drawPattern(cell.row_pos,cell.col_pos);
+          }
         }
         
         if(r>=2 && c>=2){
           let tmp_cell = this.grid[r-1][c-1];
           tmp_cell.calcAliveNeighbors();
         }
-
+        
         //Checking whether at least a
         //single cell is alive or not
         if(cell.alive){
@@ -132,12 +136,12 @@ class Grid {
       }
     }
 
-    for (let r=0; r<this.rows; r++) {
-      for (let c=0; c<this.cols; c++) {
-        let cell = this.grid[r][c];
-        //IF LIFE
-        if (this.life && !mx && !my){
-          cell.applyRulesOfLife( (c<=this.drawing_cols && r<=this.drawing_rows) );
+    //IF LIFE
+    if (this.life && !mx && !my){
+      for (let r=0; r<this.rows; r++) {
+        for (let c=0; c<this.cols; c++) {
+          let cell = this.grid[r][c];
+          cell.applyRulesOfLife( (c<this.drawing_cols && r<this.drawing_rows) );
         }
       }
     }
@@ -151,7 +155,9 @@ class Grid {
   }
 
   reDrawGrid(){
+    background(0);
     fill(0);
+    rect(0,0,screen.width,screen.height);
     for (let r=0; r<this.drawing_rows; r++) {
       for (let c=0; c<this.drawing_cols; c++) {
         let X = Cell.size * c;
@@ -168,7 +174,7 @@ class Grid {
       for (let c=0; c<this.cols; c++) {
         let cell = this.grid[r][c];
 
-        if (cell.alive && r<=this.drawing_rows && c<=this.drawing_cols){
+        if (cell.alive && r<this.drawing_rows && c<this.drawing_cols){
           cell.killAndDrawCell();
         }
         else{

@@ -26,8 +26,6 @@ class Cell {
     this.alive_neighbors = 0;
     //all neighbors
     this.neighbors = [];
-
-    // this.drawCell();
   }
 
   setCellPos(x, y) {
@@ -39,8 +37,8 @@ class Cell {
 
   drawCell() {
     fill(this.color);
-    stroke(30);
-    strokeWeight(0.2);
+    stroke(25);
+    strokeWeight(0.5);
     rect(this.x, this.y, Cell.size);
   }
 
@@ -73,9 +71,6 @@ class Cell {
    * @returns {boolean}
    */
   mouseHover(mx, my) {
-    this.end_x = this.x + Cell.size;
-    this.end_y = this.y + Cell.size;
-
     return mx > this.x && mx < this.end_x && my > this.y && my < this.end_y;
   }
 
@@ -112,6 +107,10 @@ class Cell {
         // if exactly 3 neighbors alive
         // then this cell is born
         if (within_limit){
+          // print("drawing Cell");
+          // print(this.row_pos,this.col_pos);
+          // print(this.x,this.y,'----',this.end_x,this.end_y);
+          // print("=======================");
           this.birthAndDrawCell();
         }
         else{
