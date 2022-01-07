@@ -18,7 +18,7 @@ class Cell {
       this.end_x = x + Cell.size;
       this.end_y = y + Cell.size;
     }
-
+    
     //DEAD=BLACK=(RGB_val=0)
     //ALIVE=WHITE=(RGB_val=255)
     this.color = 0;

@@ -86,10 +86,7 @@ class Grid {
         //just checking whether the cell is out of
         //the grid boundary or not
         if ((r+p[0])>=0 && (r+p[0])<this.rows && (c+p[1])>=0 && (c+p[1])<this.cols){
-          print('dafaq');
-          print(r+p[0],c+p[1]);
           grid[r+p[0]][c+p[1]].birthAndDrawCell();
-          print("Done");
         }
       }
     }
