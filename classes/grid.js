@@ -11,8 +11,8 @@ class Grid {
 
     this.cols = cols;
     this.rows = rows;
-    this.drawing_cols = Math.floor(screen.width/Cell.size);
-    this.drawing_rows = Math.floor(screen.height/Cell.size);
+    this.drawing_cols = Math.ceil(screen.width/Cell.size);
+    this.drawing_rows = Math.ceil(screen.height/Cell.size);
 
     this.grid = new Array(this.rows);
     this.life = false;
@@ -85,8 +85,11 @@ class Grid {
         p = this.current_pattern['pattern'][p];
         //just checking whether the cell is out of
         //the grid boundary or not
-        if (0<=(r+p[0]) && (r+p[0])<=this.rows && 0<=(c+p[1]) && (c+p[1])<=this.cols){
+        if ((r+p[0])>=0 && (r+p[0])<this.rows && (c+p[1])>=0 && (c+p[1])<this.cols){
+          print('dafaq');
+          print(r+p[0],c+p[1]);
           grid[r+p[0]][c+p[1]].birthAndDrawCell();
+          print("Done");
         }
       }
     }

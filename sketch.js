@@ -1,4 +1,5 @@
 let rows, cols,
+  lowest_cell_size,
   patterns_json,
   sel,reset_button,start_button,speed_slider,
   btn_x,btn_y,btn_endX,btn_endY,
@@ -14,11 +15,13 @@ function setup() {
 
   createCanvas(screen.width,screen.height);
   background(0);
-  // cols = Math.floor(screen.width/Cell.size);
-  // rows = Math.floor(screen.height/Cell.size);
 
-  cols = 640;
-  rows = 360;
+  let amount_of_pixels = screen.width*screen.height;
+  let max_cell_amount = 230400;
+
+  lowest_cell_size = int(Math.sqrt(amount_of_pixels/max_cell_amount));
+  cols = Math.ceil(screen.width/lowest_cell_size);
+  rows = Math.ceil(screen.height/lowest_cell_size);
 
   createWorld();
 
@@ -91,8 +94,8 @@ function startLife(){
 function zoomIn(){
   
   Cell.size+=zoom;
-  world.drawing_cols = Math.floor(screen.width/Cell.size);
-  world.drawing_rows = Math.floor(screen.height/Cell.size);
+  world.drawing_cols = Math.ceil(screen.width/Cell.size);
+  world.drawing_rows = Math.ceil(screen.height/Cell.size);
   world.reDrawGrid();
   patternUpdated();
   print("New drawing Grid: ",world.drawing_rows,world.drawing_cols);
@@ -100,11 +103,10 @@ function zoomIn(){
 }
 
 function zoomOut(){
-  // if(Cell.size>5) Cell.size-=1;
-  if (world.drawing_rows!=world.rows){
+  if (Cell.size!=lowest_cell_size){
     Cell.size-=zoom;
-    world.drawing_cols = Math.floor(screen.width/Cell.size);
-    world.drawing_rows = Math.floor(screen.height/Cell.size);
+    world.drawing_cols = Math.ceil(screen.width/Cell.size);
+    world.drawing_rows = Math.ceil(screen.height/Cell.size);
     world.reDrawGrid();
     patternUpdated();
     print("New drawing Grid: ",world.drawing_rows,world.drawing_cols);

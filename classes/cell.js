@@ -36,10 +36,13 @@ class Cell {
   }
 
   drawCell() {
-    fill(this.color);
-    stroke(25);
-    strokeWeight(0.5);
-    rect(this.x, this.y, Cell.size);
+    //Only draw if the position has been declared
+    if (this.x!=null && this.y!=null){
+      fill(this.color);
+      stroke(25);
+      strokeWeight(0.5);
+      rect(this.x, this.y, Cell.size);
+    }
   }
 
   killCell(){
