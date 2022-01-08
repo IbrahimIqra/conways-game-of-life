@@ -7,17 +7,18 @@ class Cell {
    * @param {number} x - x position
    * @param {number} y - y position
    */
-  static size = 15;
+  static size = 20;
 
   constructor(x, y, row_pos, col_pos) {
     this.x = x;
     this.y = y;
-    this.row_pos = row_pos;
-    this.col_pos = col_pos;
     if(x!=null && y!=null){
       this.end_x = x + Cell.size;
       this.end_y = y + Cell.size;
     }
+
+    this.row_pos = row_pos;
+    this.col_pos = col_pos;
     
     //DEAD=BLACK=(RGB_val=0)
     //ALIVE=WHITE=(RGB_val=255)
@@ -29,10 +30,18 @@ class Cell {
   }
 
   setCellPos(x, y) {
-    this.x = x;
-    this.y = y;
-    this.end_x = x + Cell.size;
-    this.end_y = y + Cell.size;
+    if (x!=null && y!=null){
+      this.x = x;
+      this.y = y;
+      this.end_x = x + Cell.size;
+      this.end_y = y + Cell.size;
+    }
+    else{
+      this.x = null;
+      this.y = null;
+      this.end_x = null;
+      this.end_y = null;
+    }
   }
 
   drawCell() {
@@ -101,7 +110,6 @@ class Cell {
         else{
           this.killCell();
         }
-        
       }
     }
     //ELSE: IF CELL DEAD WITH BLACK COLOR (0)
@@ -110,10 +118,6 @@ class Cell {
         // if exactly 3 neighbors alive
         // then this cell is born
         if (within_limit){
-          // print("drawing Cell");
-          // print(this.row_pos,this.col_pos);
-          // print(this.x,this.y,'----',this.end_x,this.end_y);
-          // print("=======================");
           this.birthAndDrawCell();
         }
         else{

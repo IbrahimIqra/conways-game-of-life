@@ -4,8 +4,7 @@ let rows, cols,
   sel,reset_button,start_button,speed_slider,
   btn_x,btn_y,btn_endX,btn_endY,
   world,
-  fr=9,
-  zoom=1;//zoom in/out is 1 Cell.size unit
+  fr=9;
 
 function preload(){
   patterns_json = loadJSON('patterns.json');
@@ -15,13 +14,6 @@ function setup() {
 
   createCanvas(screen.width,screen.height);
   background(0);
-
-  let amount_of_pixels = screen.width*screen.height;
-  let max_cell_amount = 230400;
-
-  lowest_cell_size = int(Math.sqrt(amount_of_pixels/max_cell_amount));
-  cols = Math.ceil(screen.width/lowest_cell_size);
-  rows = Math.ceil(screen.height/lowest_cell_size);
 
   createWorld();
 
@@ -40,11 +32,13 @@ function draw() {
   zoom_out_button.mousePressed(zoomOut);
 
   if(world.life){
+    reset_button.html("Kill All");
     fr = speed_slider.value();
     frameRate(fr);
     world.drawGrid();
   }
   else{
+    reset_button.html("RESET");
     frameRate(30);
   }
 
@@ -66,6 +60,14 @@ function mouseClicked() {
 }
 
 function createWorld() {
+  let amount_of_pixels = screen.width*screen.height;
+  let max_cell_amount = 230400;
+  
+  lowest_cell_size = Math.sqrt(amount_of_pixels/max_cell_amount);
+  
+  cols = Math.ceil(screen.width/lowest_cell_size);
+  rows = Math.ceil(screen.height/lowest_cell_size);
+  
   print(rows,cols);
   world = new Grid(rows, cols);
   setButtons();
@@ -92,28 +94,11 @@ function startLife(){
 }
 
 function zoomIn(){
-  
-  Cell.size+=zoom;
-  world.drawing_cols = Math.ceil(screen.width/Cell.size);
-  world.drawing_rows = Math.ceil(screen.height/Cell.size);
-  world.reDrawGrid();
-  patternUpdated();
-  print("New drawing Grid: ",world.drawing_rows,world.drawing_cols);
-
+  world.zoomIn();
 }
 
 function zoomOut(){
-  if (Cell.size!=lowest_cell_size){
-    Cell.size-=zoom;
-    world.drawing_cols = Math.ceil(screen.width/Cell.size);
-    world.drawing_rows = Math.ceil(screen.height/Cell.size);
-    world.reDrawGrid();
-    patternUpdated();
-    print("New drawing Grid: ",world.drawing_rows,world.drawing_cols);
-  }
-  else{
-    print("Lowest Cell size Limit Reached!!!");
-  }
+    world.zoomOut();
 }
 
 function setButtons(){

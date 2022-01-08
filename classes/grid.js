@@ -7,12 +7,15 @@ class Grid {
    * @param {number} rows - amount of rows in the grid
    * @param {number} cols - amount of columns in the grid
    */
+
   constructor(rows, cols) {
 
     this.cols = cols;
     this.rows = rows;
-    this.drawing_cols = Math.ceil(screen.width/Cell.size);
-    this.drawing_rows = Math.ceil(screen.height/Cell.size);
+    let screen_res = screen.width*screen.height;
+    this.lowest_cell_size = Math.sqrt(screen_res/(cols*rows));
+    
+    this.defineDrawingLen();
 
     this.grid = new Array(this.rows);
     this.life = false;
@@ -28,9 +31,6 @@ class Grid {
         ]
     };
 
-    //this.x is -Cell.size because 
-    //won't be printing the first padding
-    //so that should be offscreen
     this.x = 0, this.y = 0;
     this.end_x = 0, this.end_y = 0;
 
@@ -40,7 +40,7 @@ class Grid {
 
       for (let col = 0, drawing_col = 0; col < this.cols; col++) {
 
-        if(row<this.drawing_rows && col<this.drawing_cols){
+        if (this.withinDrawingBoundary(row,col)){
           let X = Cell.size * drawing_col + this.x;
           let Y = Cell.size * drawing_row + this.y;
           this.grid[row][col] = new Cell(X, Y, row, col);
@@ -63,13 +63,32 @@ class Grid {
           tmp_cell.neighbors.push(this.grid[row][col]);//down_right
         }
       }
-      if(row<=this.drawing_rows){
+      if (row>=this.drawing_start_row && row<this.drawing_end_row){
         drawing_row+=1;
       }
     }
 
-    this.end_x = this.x + Cell.size * this.drawing_cols;
-    this.end_y = this.y + Cell.size * this.drawing_rows;
+    this.end_x = this.x + Cell.size * this.total_drawing_cols;
+    this.end_y = this.y + Cell.size * this.total_drawing_rows;
+
+  }
+
+  //returns true if r,c is within the drawing boundary
+  withinDrawingBoundary(r,c){
+    return (
+      r>=this.drawing_start_row && 
+      r<this.drawing_end_row &&
+      c>=this.drawing_start_col &&
+      c<this.drawing_end_col);
+  }
+  
+  //returns true if r,c is within the world boundary
+  withinWorldBoundary(r,c){
+    return (
+      r>=0 && 
+      r<this.rows &&
+      c>=0 &&
+      c<this.cols);
   }
 
   drawPattern(r,c){
@@ -85,21 +104,9 @@ class Grid {
         p = this.current_pattern['pattern'][p];
         //just checking whether the cell is out of
         //the grid boundary or not
-        if ((r+p[0])>=0 && (r+p[0])<this.rows && (c+p[1])>=0 && (c+p[1])<this.cols){
+        if ( this.withinWorldBoundary( r+p[0] , c+p[1] ) ){
           grid[r+p[0]][c+p[1]].birthAndDrawCell();
         }
-      }
-    }
-    // print("=======================");
-  }
-  
-
-  //TEMPORARY ALL NEIGHBOR CALC
-  allNeighborCalc(){
-    for (let r=2; r<this.rows-1; r++) {
-      for (let c=2; c<this.cols-1; c++) {
-        let cell = this.grid[r-1][c-1];
-        cell.calcAliveNeighbors();
       }
     }
   }
@@ -115,7 +122,7 @@ class Grid {
       for (let c=0; c<this.cols; c++) {
         let cell = this.grid[r][c];
 
-        if(cell.col_pos<this.drawing_cols && cell.row_pos<this.drawing_rows){
+        if ( this.withinDrawingBoundary(cell.row_pos,cell.col_pos) ){
           if (mx && my && cell.mouseHover(mx, my)) {
             print(cell.row_pos+"  "+cell.col_pos);
             this.drawPattern(cell.row_pos,cell.col_pos);
@@ -141,7 +148,7 @@ class Grid {
       for (let r=0; r<this.rows; r++) {
         for (let c=0; c<this.cols; c++) {
           let cell = this.grid[r][c];
-          cell.applyRulesOfLife( (c<this.drawing_cols && r<this.drawing_rows) );
+          cell.applyRulesOfLife( this.withinDrawingBoundary(r,c) );
         }
       }
     }
@@ -158,12 +165,21 @@ class Grid {
     background(0);
     fill(0);
     rect(0,0,screen.width,screen.height);
-    for (let r=0; r<this.drawing_rows; r++) {
-      for (let c=0; c<this.drawing_cols; c++) {
-        let X = Cell.size * c;
-        let Y = Cell.size * r;
-        this.grid[r][c].setCellPos(X,Y);
-        this.grid[r][c].drawCell();
+    for (let r=0, r_count=0; r<this.rows; r++) {
+      for (let c=0, c_count=0; c<this.cols; c++) {
+        if ( this.withinDrawingBoundary(r,c) ){
+          let X = Cell.size * c_count;
+          let Y = Cell.size * r_count;
+          this.grid[r][c].setCellPos(X,Y);
+          this.grid[r][c].drawCell();
+          c_count++;
+        }
+        else{
+          this.grid[r][c].setCellPos(null,null);
+        }
+      }
+      if ( r>=this.drawing_start_row && r<this.drawing_end_row){
+        r_count++;
       }
     }
   }
@@ -174,7 +190,7 @@ class Grid {
       for (let c=0; c<this.cols; c++) {
         let cell = this.grid[r][c];
 
-        if (cell.alive && r<this.drawing_rows && c<this.drawing_cols){
+        if (cell.alive && this.withinDrawingBoundary(r,c)){
           cell.killAndDrawCell();
         }
         else{
@@ -183,6 +199,62 @@ class Grid {
 
         cell.alive_neighbors=0;
       }
+    }
+  }
+
+  zoomIn(){
+    Cell.size+=1;
+    if(Cell.size>30){
+      Cell.size-=1;
+      alert('Max Zoom In Limit Reached');
+    }
+    else{
+      this.defineDrawingLen();
+      this.reDrawGrid();
+    }
+  }
+
+  zoomOut(){
+    let zoom_out_lvl = (Cell.size<10) ? 0.5:1;
+    Cell.size-=zoom_out_lvl;
+    if(Cell.size<this.lowest_cell_size){
+      Cell.size+=zoom_out_lvl;
+      alert('Max Zoom Out Limit Reached');
+    }
+    else{
+      this.defineDrawingLen();
+      this.reDrawGrid();
+    }
+  }
+
+  defineDrawingLen(){
+    this.total_drawing_rows = Math.ceil(screen.height/Cell.size);
+    this.total_drawing_cols = Math.ceil(screen.width/Cell.size);
+
+    this.drawing_start_row = 0;
+    this.drawing_end_row = this.rows;
+    this.drawing_start_col = 0;
+    this.drawing_end_col = this.cols;
+
+    while (true){
+
+      if ( this.drawing_end_row-this.drawing_start_row<=this.total_drawing_rows &&
+        this.drawing_end_col-this.drawing_start_col<=this.total_drawing_cols ){
+          break;
+        }
+      if (this.drawing_end_row-this.drawing_start_row > this.total_drawing_rows){
+        this.drawing_start_row+=1;
+      }
+      if (this.drawing_end_row-this.drawing_start_row > this.total_drawing_rows){
+        this.drawing_end_row-=1;
+      }
+      if (this.drawing_end_col-this.drawing_start_col > this.total_drawing_cols){
+        this.drawing_start_col+=1;
+      }
+      if (this.drawing_end_col-this.drawing_start_col > this.total_drawing_cols){
+        this.drawing_end_col-=1;
+      }
+
     }
   }
 
