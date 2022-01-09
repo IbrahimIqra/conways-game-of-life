@@ -103,11 +103,11 @@ function zoomOut(){
 
 function setButtons(){
   if (deviceType() == 'desktop'){
-    btn_x = screen.width/2-200;
+    btn_x = screen.width/2-100;
     btn_y = 30;
   }
   else{
-    btn_x = 10;
+    btn_x = 20;
     btn_y = 30;
   }
 

@@ -48,7 +48,7 @@ class Cell {
     //Only draw if the position has been declared
     if (this.x!=null && this.y!=null){
       fill(this.color);
-      stroke(25);
+      stroke(50);
       strokeWeight(0.5);
       rect(this.x, this.y, Cell.size);
     }
