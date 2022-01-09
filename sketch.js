@@ -33,12 +33,12 @@ function draw() {
 
   if(world.life){
     reset_button.html("Kill All");
+    reset_button.removeAttribute('disabled');
     fr = speed_slider.value();
     frameRate(fr);
     world.drawGrid();
   }
   else{
-    reset_button.html("RESET");
     frameRate(30);
   }
 
@@ -55,6 +55,7 @@ function mouseClicked() {
   //avoid the buttons area if pressed
   let pad = Cell.size/2;
   if ( !(mx>=btn_x-pad && my>=btn_y-pad && mx<=btn_endX+pad && my<=btn_endY+pad) ){
+    reset_button.removeAttribute('disabled');
     world.drawGrid(mx,my);
   }
 }
@@ -78,6 +79,7 @@ function resetWorld() {
   if (world.life){
     console.log("Resetting world");
     world.resetGrid();
+    reset_button.html("Clear");
   }
   //if the world is already dead
   else{
@@ -85,6 +87,9 @@ function resetWorld() {
     console.log("Creating a brand new world");
     world = new Grid(rows,cols);
     patternUpdated();
+    //disabling the button because just resetted
+    reset_button.html("RESET");
+    reset_button.attribute('disabled', '');
   }
 }
 
@@ -98,7 +103,7 @@ function zoomIn(){
 }
 
 function zoomOut(){
-    world.zoomOut();
+  world.zoomOut();
 }
 
 function setButtons(){
