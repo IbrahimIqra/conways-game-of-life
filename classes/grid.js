@@ -8,13 +8,15 @@ class Grid {
    * @param {number} cols - amount of columns in the grid
    */
 
-  constructor(rows, cols) {
+  constructor() {
 
-    this.cols = cols;
-    this.rows = rows;
     let screen_res = screen.width*screen.height;
-    this.lowest_cell_size = Math.sqrt(screen_res/(cols*rows));
+    this.max_cell_amount = 230400;
+    this.lowest_cell_size = Math.sqrt(screen_res/this.max_cell_amount);
     
+    this.cols = Math.ceil(screen.width/this.lowest_cell_size);
+    this.rows = Math.ceil(screen.height/this.lowest_cell_size);
+
     this.defineDrawingLen();
 
     this.grid = new Array(this.rows);
@@ -23,7 +25,6 @@ class Grid {
     //pattern of the currently selected
     //option from the dropdown menu
     //By default it's manual
-    //meaning only change the clicked cell
     this.current_pattern = {
         "name": "Manual",
         "pattern": [

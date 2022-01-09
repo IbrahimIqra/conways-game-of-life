@@ -2,6 +2,7 @@ let rows, cols,
   lowest_cell_size,
   patterns_json,
   sel,reset_button,start_button,speed_slider,
+  zoom_in_button,zoom_out_button,
   btn_x,btn_y,btn_endX,btn_endY,
   world,
   fr=9;
@@ -24,15 +25,15 @@ function setup() {
 
 function draw() {
 
-  reset_button.mousePressed(resetWorld);
-  start_button.mousePressed(startLife);
-  sel.changed(patternUpdated);
-
-  zoom_in_button.mousePressed(zoomIn);
-  zoom_out_button.mousePressed(zoomOut);
+  //enabling the zoom_in and zoom_out buttons
+  //when execution reached the draw() after
+  //completing Zooming In/Out operation
+  zoom_in_button.removeAttribute('disabled');
+  zoom_out_button.removeAttribute('disabled');
 
   if(world.life){
-    reset_button.html("Kill All");
+    reset_button.html("KILL ALL");
+    //enabling the reset button when simulation is running
     reset_button.removeAttribute('disabled');
     fr = speed_slider.value();
     frameRate(fr);
@@ -55,22 +56,15 @@ function mouseClicked() {
   //avoid the buttons area if pressed
   let pad = Cell.size/2;
   if ( !(mx>=btn_x-pad && my>=btn_y-pad && mx<=btn_endX+pad && my<=btn_endY+pad) ){
+    //enabling the reset button when drawing pattern
     reset_button.removeAttribute('disabled');
     world.drawGrid(mx,my);
   }
 }
 
 function createWorld() {
-  let amount_of_pixels = screen.width*screen.height;
-  let max_cell_amount = 230400;
-  
-  lowest_cell_size = Math.sqrt(amount_of_pixels/max_cell_amount);
-  
-  cols = Math.ceil(screen.width/lowest_cell_size);
-  rows = Math.ceil(screen.height/lowest_cell_size);
-  
-  print(rows,cols);
-  world = new Grid(rows, cols);
+  world = new Grid();
+  print(world.rows,world.cols);
   setButtons();
 }
 
@@ -79,7 +73,7 @@ function resetWorld() {
   if (world.life){
     console.log("Resetting world");
     world.resetGrid();
-    reset_button.html("Clear");
+    reset_button.html("CLEAR");
   }
   //if the world is already dead
   else{
@@ -87,8 +81,8 @@ function resetWorld() {
     console.log("Creating a brand new world");
     world = new Grid(rows,cols);
     patternUpdated();
-    //disabling the button because just resetted
     reset_button.html("RESET");
+    //disabling the button because just resetted
     reset_button.attribute('disabled', '');
   }
 }
@@ -98,12 +92,20 @@ function startLife(){
   world.drawGrid(null,null,start=true);
 }
 
-function zoomIn(){
-  world.zoomIn();
+function zoomInClicked(){
+  //disabling the button to prevent spamming
+  zoom_in_button.attribute('disabled', '');
+  world.zoomIn(zoom_in_button);
+  //enabling it again in the draw()
 }
 
-function zoomOut(){
-  world.zoomOut();
+function zoomOutClicked(){
+  //disabling the button to prevent spamming
+  zoom_out_button.attribute('disabled', '');
+  print("Drawing zoomed out grid");
+  world.zoomOut(zoom_out_button);
+  print("Done!");
+  //enabling it again in the draw()
 }
 
 function setButtons(){
@@ -157,6 +159,13 @@ function setButtons(){
 
   btn_endX = x+80;
   btn_endY = y+30+70;
+
+  //Now select setting button events
+  reset_button.mouseClicked(resetWorld);
+  start_button.mouseClicked(startLife);
+  sel.changed(patternUpdated);
+  zoom_in_button.mouseClicked(zoomInClicked);
+  zoom_out_button.mouseClicked(zoomOutClicked);
 }
 
 function deviceType(){

@@ -7,7 +7,7 @@ class Cell {
    * @param {number} x - x position
    * @param {number} y - y position
    */
-  static size = 20;
+  static size = 5;
 
   constructor(x, y, row_pos, col_pos) {
     this.x = x;
