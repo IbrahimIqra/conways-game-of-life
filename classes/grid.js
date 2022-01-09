@@ -216,10 +216,9 @@ class Grid {
   }
 
   zoomOut(){
-    let zoom_out_lvl = (Cell.size<10) ? 0.5:1;
-    Cell.size-=zoom_out_lvl;
+    Cell.size-=1;
     if(Cell.size<this.lowest_cell_size){
-      Cell.size+=zoom_out_lvl;
+      Cell.size+=1;
       alert('Max Zoom Out Limit Reached');
     }
     else{
