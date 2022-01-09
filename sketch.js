@@ -1,4 +1,5 @@
 let rows, cols,
+  lowest_cell_size,
   patterns_json,
   sel,reset_button,start_button,speed_slider,
   btn_x,btn_y,btn_endX,btn_endY,
@@ -12,28 +13,32 @@ function preload(){
 function setup() {
 
   createCanvas(screen.width,screen.height);
-  background(255);
-  cols = Math.ceil(screen.width/Cell.size);
-  rows = Math.ceil(screen.height/Cell.size);
+  background(0);
 
   createWorld();
+
   if (deviceType()=='desktop'){
     alert('Press F11 for fullscreen');
   }
 }
 
-function draw() { 
+function draw() {
 
   reset_button.mousePressed(resetWorld);
   start_button.mousePressed(startLife);
   sel.changed(patternUpdated);
 
+  zoom_in_button.mousePressed(zoomIn);
+  zoom_out_button.mousePressed(zoomOut);
+
   if(world.life){
+    reset_button.html("Kill All");
     fr = speed_slider.value();
     frameRate(fr);
     world.drawGrid();
   }
   else{
+    reset_button.html("RESET");
     frameRate(30);
   }
 
@@ -55,6 +60,15 @@ function mouseClicked() {
 }
 
 function createWorld() {
+  let amount_of_pixels = screen.width*screen.height;
+  let max_cell_amount = 230400;
+  
+  lowest_cell_size = Math.sqrt(amount_of_pixels/max_cell_amount);
+  
+  cols = Math.ceil(screen.width/lowest_cell_size);
+  rows = Math.ceil(screen.height/lowest_cell_size);
+  
+  print(rows,cols);
   world = new Grid(rows, cols);
   setButtons();
 }
@@ -79,13 +93,21 @@ function startLife(){
   world.drawGrid(null,null,start=true);
 }
 
+function zoomIn(){
+  world.zoomIn();
+}
+
+function zoomOut(){
+    world.zoomOut();
+}
+
 function setButtons(){
   if (deviceType() == 'desktop'){
     btn_x = screen.width/2-200;
     btn_y = 30;
   }
   else{
-    btn_x = 15;
+    btn_x = 10;
     btn_y = 30;
   }
 
@@ -101,26 +123,35 @@ function setButtons(){
   sel.size(80,30);
   sel.style('border-radius: 5');
 
+  zoom_in_button = createButton('ZOOM IN');
+  zoom_in_button.position(x+10, y+40);
+  zoom_in_button.size(100,25);
+  zoom_in_button.style('border-radius: 5');
+
+  speed_slider = createSlider(1,30,fr,0);
+  speed_slider.position(x+15, y+70);
+  speed_slider.size(200,30);
+  speed_slider.style('border-radius: 5');
+
   x+=100;
   reset_button = createButton('RESET');
   reset_button.position(x, y);
   reset_button.size(60,30);
   reset_button.style('border-radius: 5');
 
+  zoom_out_button = createButton('ZOOM OUT');
+  zoom_out_button.position(x+30, y+40);
+  zoom_out_button.size(100,25);
+  zoom_out_button.style('border-radius: 5');
+
   start_button = createButton('START');
   x+=80;
   start_button.position(x, y);
   start_button.size(60,30);
   start_button.style('border-radius: 5');
-  
-  speed_slider = createSlider(1,30,fr,0);
-  x+=80;
-  speed_slider.position(x, y);
-  speed_slider.size(100,30);
-  speed_slider.style('border-radius: 5');
 
-  btn_endX = x+100;
-  btn_endY = y+30;
+  btn_endX = x+80;
+  btn_endY = y+30+70;
 }
 
 function deviceType(){
