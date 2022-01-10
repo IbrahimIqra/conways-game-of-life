@@ -8,7 +8,7 @@ class Cell {
    * @param {number} y - y position
    */
   //default Cell size
-  static size = 20;
+  static size = 17;
 
   constructor(x, y, row_pos, col_pos) {
     this.x = x;
@@ -84,7 +84,7 @@ class Cell {
    * @returns {boolean}
    */
   mouseHover(mx, my) {
-    return mx > this.x && mx < this.end_x && my > this.y && my < this.end_y;
+    return mx >= this.x && mx < this.end_x && my >= this.y && my < this.end_y;
   }
 
   /**
